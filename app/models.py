@@ -6,6 +6,7 @@ from flask_login import UserMixin
 Primary entities
 '''
 
+
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), index=True, unique=True)
@@ -21,26 +22,42 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+
 class Stores(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     store_id = db.Column(db.String(100))
     store_name = db.Column(db.String(100))
+
 
 class Charity(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200))
     category_id = db.Column(db.Integer)
 
-class Product():
+
+class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    # todo
+
 
 '''
 higher level entities
 '''
 
+
 class Chain(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
+
+
+class ProductCategory(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100))
+
+
+class Basket(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    # todo
 
 
 '''
@@ -53,9 +70,15 @@ class UserStores(db.Model):  # todo: define foreign keys
     user_id = db.Column(db.Integer)  # which stores is affected by this user
     store_id = db.Column(db.String(100))
 
+
+class BasketProduct(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    # todo
+
 '''
 infotables 
 '''
+
 
 class UseCategory(db.Model):
     '''
@@ -65,6 +88,7 @@ class UseCategory(db.Model):
     name = db.Column(db.String(100))
     description = db.Column(db.String(500))
 
+
 class FoodCategory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
@@ -72,3 +96,4 @@ class FoodCategory(db.Model):
 class RequestType(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
+
