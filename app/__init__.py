@@ -21,16 +21,16 @@ app.config.from_object(Config)
 logging.info(f"Database url: {Config.SQLALCHEMY_DATABASE_URI}")
 
 chainadmin = Admin(app, name='Feed', template_mode='bootstrap3')
-from app.chain_admin_veiws import *
+from app.chain_admin_views import *
 
 storeadmin = Admin(app, name='Feed', template_mode='bootstrap3', url='/sa', endpoint='/sa')
-from app.store_admin_veiws import *
+from app.store_admin_views import *
 
 charityworker = Admin(app, name='Feed', template_mode='bootstrap3', url='/cw', endpoint='/cw')
-from app.charity_worker_veiws import *
+from app.charity_worker_views import *
 
 storekeeper = Admin(app, name='Feed', template_mode='bootstrap3', url='/sk', endpoint='/sk')
-from app.storekeeper_veiws import *
+from app.storekeeper_views import *
 
 from app import routes
 from app.models import *
