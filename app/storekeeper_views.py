@@ -7,7 +7,7 @@ from flask_admin import BaseView, expose
 veiws
 '''
 
-class UploadProductVeiw(BaseView):
+class UploadProductView(BaseView):
     @expose('/')
     def index(self):
         return 'birb!'
@@ -16,7 +16,7 @@ class UploadProductVeiw(BaseView):
 '''
 storekeeper interface
 '''
-storekeeper.add_view(UploadProductVeiw(endpoint='test'))
+storekeeper.add_view(UploadProductView(endpoint='test'))
 
 # storekeeper.add_view(ModelView(Product, db.session))
 # storekeeper.add_view(ModelView(UseCategory, db.session))
