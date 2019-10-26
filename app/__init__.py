@@ -28,6 +28,11 @@ logging.info(f"Database url: {Config.SQLALCHEMY_DATABASE_URI}")
 from app import routes
 from app.models import *
 admin = Admin(app, name='Feed', template_mode='bootstrap3')
+charworker = Admin(app, name='Feed', template_mode='bootstrap3', url='/charworker', endpoint='/charworker')
+
+'''
+chainadmin interface
+'''
 
 admin.add_view(ModelView(User, db.session))
 admin.add_view(ModelView(Stores, db.session))
@@ -40,3 +45,5 @@ admin.add_view(ModelView(ProductCategory, db.session))
 admin.add_view(ModelView(Cart, db.session))
 admin.add_view(ModelView(ConnectCartProduct, db.session))
 admin.add_view(ModelView(HandlingCategory, db.session))
+
+charworker.add_view(ModelView(Stores, db.session, endpoint='cw-stores'))
