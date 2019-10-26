@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+    <h1>Choose your persona</h1>
+    <div class="row">
+        <div class="col-md-4">
+            <ul>
+            	<li><a href="{{ url_for("/ca.index") }}">Chain Admin</a></li>
+            	<li><a href="{{ url_for("/cw.index") }}">Charity Worker</a></li>
+            	<li><a href="{{ url_for("/sa.index") }}">Store Admin</a></li>
+            	<li><a href="{{ url_for("/sk.index") }}">Storekeeper</a></li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}

@@ -8,7 +8,7 @@ import time
 @app.route('/index', methods=['GET', 'POST'])
 @login_required
 def index():
-    return 'kakika'
+    return render_template('index.html', title='Sign In')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

@@ -20,7 +20,11 @@ logging.basicConfig(level=logging.DEBUG)
 app.config.from_object(Config)
 logging.info(f"Database url: {Config.SQLALCHEMY_DATABASE_URI}")
 
-chainadmin = Admin(app, name='Feed', template_mode='bootstrap3')
+# NOTE: Mother of all hacks. Without an admin in the root, this is not working. This is
+# ugly as hell, but at 1:26AM, I refuse to clean up the mess we are living with. / hermit
+adminapp = Admin(app, name='Feed', template_mode='bootstrap3')
+
+chainadmin = Admin(app, name='Feed', template_mode='bootstrap3', url='/ca', endpoint='/ca')
 from app.chain_admin_views import *
 
 storeadmin = Admin(app, name='Feed', template_mode='bootstrap3', url='/sa', endpoint='/sa')
@@ -34,7 +38,3 @@ from app.storekeeper_views import *
 
 from app import routes
 from app.models import *
-
-
-
-
