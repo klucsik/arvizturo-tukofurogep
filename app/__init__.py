@@ -10,9 +10,6 @@ from flask_bootstrap import Bootstrap
 from flask_admin import Admin
 
 
-from flask_admin.contrib.sqla import ModelView
-from app.modelviews import CharityModelView
-
 app = Flask(__name__)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
@@ -23,28 +20,21 @@ logging.basicConfig(level=logging.DEBUG)
 app.config.from_object(Config)
 logging.info(f"Database url: {Config.SQLALCHEMY_DATABASE_URI}")
 
+chainadmin = Admin(app, name='Feed', template_mode='bootstrap3')
+from app.chain_admin_veiws import *
 
+storeadmin = Admin(app, name='Feed', template_mode='bootstrap3', url='/sa', endpoint='/sa')
+from app.store_admin_veiws import *
 
+charityworker = Admin(app, name='Feed', template_mode='bootstrap3', url='/cw', endpoint='/cw')
+from app.charity_worker_veiws import *
+
+storekeeper = Admin(app, name='Feed', template_mode='bootstrap3', url='/sk', endpoint='/sk')
+from app.storekeeper_veiws import *
 
 from app import routes
 from app.models import *
-admin = Admin(app, name='Feed', template_mode='bootstrap3')
-charworker = Admin(app, name='Feed', template_mode='bootstrap3', url='/charworker', endpoint='/charworker')
 
-'''
-chainadmin interface
-'''
 
-admin.add_view(ModelView(User, db.session))
-admin.add_view(ModelView(Stores, db.session))
-admin.add_view(ModelView(Product, db.session))
-admin.add_view(ModelView(UseCategory, db.session))
 
-admin.add_view(CharityModelView(Charity, db.session))
-admin.add_view(ModelView(Chain, db.session))
-admin.add_view(ModelView(ProductCategory, db.session))
-admin.add_view(ModelView(Cart, db.session))
-admin.add_view(ModelView(ConnectCartProduct, db.session))
-admin.add_view(ModelView(HandlingCategory, db.session))
 
-charworker.add_view(ModelView(Stores, db.session, endpoint='cw-stores'))
