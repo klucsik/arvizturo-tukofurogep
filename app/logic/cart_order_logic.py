@@ -1,5 +1,6 @@
 from app.models import *
-
+import logging
+from flask import flash
 
 def add_to_cart(user_id, product_id):
     try:

@@ -1,9 +1,7 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import db
-import logging
 from flask_login import UserMixin
 from app import login
-from flask import flash
 from sqlalchemy import orm
 '''
 Primary entities
@@ -74,6 +72,7 @@ class Charity(db.Model):
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     external_id = db.Column(db.String(200))
+    name = db.Column(db.String(200))
     store_id = db.Column(db.Integer, db.ForeignKey('stores.id'), nullable=False)
     store = orm.relationship("Stores")
     quantity = db.Column(db.Integer)
@@ -83,6 +82,9 @@ class Product(db.Model):
     # in_cart = in someones cart/in cart table,
     # ordered = in order table
     # fullfilled = delivered to charities, end state
+    product_category = db.Column(db.Integer, db.ForeignKey('product_category.id'))
+    handling_category = db.Column(db.Integer, db.ForeignKey('handling_category.id'))
+    use_category = db.Column(db.Integer, db.ForeignKey('use_category.id'))
 
 
 class ProductMapping(db.Model):
