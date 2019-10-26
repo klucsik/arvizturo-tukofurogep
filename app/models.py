@@ -37,7 +37,13 @@ class Charity(db.Model):
 
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    # todo
+    external_id = db.Column(db.String(200))
+    name = db.Column(db.String(200))
+    store = db.Column(db.Integer)
+    FoodCategory = db.Column(db.Integer)
+    quantity = db.Column(db.Integer)
+    quantity_dimension = db.Column(db.String(100))
+
 
 
 '''
@@ -55,9 +61,10 @@ class ProductCategory(db.Model):
     name = db.Column(db.String(100))
 
 
-class Basket(db.Model):
+class Cart(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    # todo
+    user_id = db.Column(db.Integer)
+
 
 
 '''
@@ -73,7 +80,8 @@ class UserStores(db.Model):  # todo: define foreign keys
 
 class BasketProduct(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    # todo
+    cart_id = db.Column(db.Integer)
+    product_id = db.Column(db.Integer)
 
 '''
 infotables 
@@ -82,7 +90,7 @@ infotables
 
 class UseCategory(db.Model):
     '''
-    for example human consumable , animal comsumable
+    for example human consumable , animal consumable
     '''
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
