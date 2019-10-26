@@ -14,4 +14,4 @@ Flask-JWT-Extended
 Flask-RESTful
 flask_bcrypt
 jsonschema
-flask-admin
+flask_admin
