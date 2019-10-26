@@ -70,13 +70,19 @@ class Charity(db.Model):
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     external_id = db.Column(db.String(200))
-    name = db.Column(db.String(200))
     store = db.Column(db.Integer)
-    product_category = db.Column(db.Integer)
-    handling_category = db.Column(db.Integer)
     quantity = db.Column(db.Integer)
     quantity_dimension = db.Column(db.String(100))
 
+
+class ProductMapping(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    chain_id = db.Column(db.Integer, db.ForeignKey('chain.id'), nullable=False)
+    chain_product_id = db.Column(db.String(200))
+    name = db.Column(db.String(200))
+    product_category = db.Column(db.Integer, db.ForeignKey('product_category.id'), nullable=False)
+    handling_category = db.Column(db.Integer, db.ForeignKey('handling_category.id'), nullable=False)
+    reuse_category = db.Column(db.Integer, db.ForeignKey('use_category.id'), nullable=False)
 
 
 '''
