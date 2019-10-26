@@ -16,6 +16,7 @@ class User(UserMixin, db.Model):
     charity_id = db.Column(db.Integer)  # connect to Charity table if charity user
     chain_id = db.Column(db.Integer)  # connect to chain table if storekeeper or admin
 
+
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
