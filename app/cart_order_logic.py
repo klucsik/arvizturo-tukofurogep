@@ -18,3 +18,22 @@ def makeorder(user_id):
         flash(f' Something went wrong: ' + str(e))
 
 
+def add_to_cart(user_id, product_id):
+    try:
+        ordering_user = User.query.filter_by(id=user_id).first()
+        if ordering_user.cart_is_open:
+             if Cart.query.filter_by(product_id=product_id).first():
+                 raise Exception("Item already in someones cart")
+             else:
+                row_to_cart = Cart(user_id=user_id, product_id=product_id)
+                db.session.add(row_to_cart)
+                db.session.flush()
+                db.session.commit()
+        else:
+            raise Exception("User's cart is not open")
+
+    except Exception as e:
+        logging.error('makeorder went wrong: ' + str(e))
+        flash(f' Something went wrong: ' + str(e))
+
+
