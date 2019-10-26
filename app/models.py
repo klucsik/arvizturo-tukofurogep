@@ -11,6 +11,7 @@ managed_stores = db.Table('stores_managed_by_user',
     db.Column('store_id', db.Integer, db.ForeignKey('stores.id'), primary_key=True)
 )
 
+
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
@@ -30,15 +31,35 @@ class User(UserMixin, db.Model):
 
 class Stores(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    store_id = db.Column(db.String(100))
+    store_id = db.Column(db.String(100))  # chain specific store id
     store_name = db.Column(db.String(100))
     chain_id = db.Column(db.Integer, db.ForeignKey('chain.id'), nullable=False)
+
+
+charity_reuse_categories = db.Table('charity_reuse_categories',
+    db.Column('charity_id', db.Integer, db.ForeignKey('charity.id'), primary_key=True),
+    db.Column('reuse_id', db.Integer, db.ForeignKey('use_category.id'), primary_key=True)
+)
+
+
+charity_handling_categories = db.Table('charity_handling_categories',
+    db.Column('charity_id', db.Integer, db.ForeignKey('charity.id'), primary_key=True),
+    db.Column('handling_id', db.Integer, db.ForeignKey('handling_category.id'), primary_key=True)
+)
+
+charity_product_categories = db.Table('charity_product_categories',
+    db.Column('charity_id', db.Integer, db.ForeignKey('charity.id'), primary_key=True),
+    db.Column('product_category_id', db.Integer, db.ForeignKey('product_category.id'), primary_key=True)
+)
 
 
 class Charity(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200))
     category_id = db.Column(db.Integer)
+    reuse_categories = db.relationship('UseCategory', secondary=charity_reuse_categories, lazy='subquery')
+    handling_categories = db.relationship('HandlingCategory', secondary=charity_handling_categories, lazy='subquery')
+    product_categories = db.relationship('ProductCategory', secondary=charity_product_categories, lazy='subquery')
     organisation_name = db.Column(db.String(200), unique=True)
     address = db.Column(db.String(200))
     contact_name = db.Column(db.String(100))
@@ -111,10 +132,6 @@ class HandlingCategory(db.Model):
     name = db.Column(db.String(100))
     description = db.Column(db.String(500))
 
-
-class RequestType(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100))
 
 '''
 misc
