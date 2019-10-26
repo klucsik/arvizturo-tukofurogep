@@ -1,7 +1,7 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import db
 from flask_login import UserMixin
-
+from app import login
 '''
 Primary entities
 '''
@@ -9,7 +9,7 @@ Primary entities
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), index=True, unique=True)
+    username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
     role = db.Column(db.Integer, default=0)  # 0 if charity user, 1 if storekeeper, 2 if admin
@@ -40,7 +40,8 @@ class Product(db.Model):
     external_id = db.Column(db.String(200))
     name = db.Column(db.String(200))
     store = db.Column(db.Integer)
-    FoodCategory = db.Column(db.Integer)
+    ProductCategory = db.Column(db.Integer)
+    HandlingCategory = db.Column(db.Integer)
     quantity = db.Column(db.Integer)
     quantity_dimension = db.Column(db.String(100))
 
@@ -72,13 +73,13 @@ connector tables
 '''
 
 
-class UserStores(db.Model):  # todo: define foreign keys
+class ConnectUserStores(db.Model):  # todo: define foreign keys
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer)  # which stores is affected by this user
     store_id = db.Column(db.String(100))
 
 
-class BasketProduct(db.Model):
+class ConnectCartProduct(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     cart_id = db.Column(db.Integer)
     product_id = db.Column(db.Integer)
@@ -96,12 +97,23 @@ class UseCategory(db.Model):
     name = db.Column(db.String(100))
     description = db.Column(db.String(500))
 
-
-class FoodCategory(db.Model):
+class HandlingCategory(db.Model):
+    '''
+    for example requeires freezing
+    '''
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100))
+    description = db.Column(db.String(500))
 
 
 class RequestType(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
 
+'''
+misc
+'''
+
+@login.user_loader
+def load_user(id):
+    return User.query.get(int(id))

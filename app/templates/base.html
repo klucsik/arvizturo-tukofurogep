@@ -1,0 +1,50 @@
+{% extends 'bootstrap_base.html' %}
+{% from 'bootstrap/form.html' import render_form %}
+
+{% block title %}
+    {% if title %}{{ title }} - Feed {% else %} Welcome to Feed {% endif %}
+{% endblock %}
+{% block scripts %}
+
+{% endblock %}
+
+
+{% block content %}
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="{{ url_for('index') }}">Feed - Test - name pending</a>  <!-- todo: ezt gitignoreolni kell-->
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    {% if current_user.is_anonymous %}
+                    <li><a class="nav-link" href="{{ url_for('login') }}">Login</a></li>
+                    {% else %}
+                    <li><a  class="nav-link" href="{{ url_for('logout') }}">Logout</a></li>
+                    {% endif %}
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+
+    <div class="container">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-info" role="alert">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        {# application content needs to be provided in the app_content block #}
+        {% block app_content %}{% endblock %}
+    </div>
+    <footer class="page-footer font-small blue">
+        <div class="footer-copyright text-center py-3">Rendered in {{ g.request_time() }}</div>
+    </footer>
+{% endblock %}
+
