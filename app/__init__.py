@@ -11,6 +11,7 @@ from flask_admin import Admin
 
 
 from flask_admin.contrib.sqla import ModelView
+from app.modelviews import CharityModelView
 
 app = Flask(__name__)
 db = SQLAlchemy(app)
@@ -39,7 +40,7 @@ admin.add_view(ModelView(Stores, db.session))
 admin.add_view(ModelView(Product, db.session))
 admin.add_view(ModelView(UseCategory, db.session))
 
-admin.add_view(ModelView(Charity, db.session))
+admin.add_view(CharityModelView(Charity, db.session))
 admin.add_view(ModelView(Chain, db.session))
 admin.add_view(ModelView(ProductCategory, db.session))
 admin.add_view(ModelView(Cart, db.session))
