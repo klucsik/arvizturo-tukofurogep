@@ -27,3 +27,4 @@ class RegistrationForm(FlaskForm):
         user = User.query.filter_by(email=email.data).first()
         if user is not None:
             raise ValidationError('Kérlek válassz másik email-címet!')
+

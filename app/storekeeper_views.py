@@ -22,3 +22,8 @@ storekeeper.add_view(UploadProductView(endpoint='test'))
 # storekeeper.add_view(ModelView(UseCategory, db.session))
 # storekeeper.add_view(ModelView(ProductCategory, db.session))
 # storekeeper.add_view(ModelView(HandlingCategory, db.session))
+
+
+
+
+

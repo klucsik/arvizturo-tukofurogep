@@ -1,7 +1,9 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import db
+import logging
 from flask_login import UserMixin
 from app import login
+from flask import flash
 '''
 Primary entities
 '''
@@ -21,6 +23,7 @@ class User(UserMixin, db.Model):
     charity_id = db.Column(db.Integer)  # connect to Charity table if charity user
     chain_id = db.Column(db.Integer)  # connect to chain table if storekeeper or admin
     managed_stores = db.relationship('Stores', secondary=managed_stores, lazy='subquery', backref=db.backref('users', lazy=True))
+    cart_is_open = db.Column(db.Boolean, default= True)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -103,8 +106,34 @@ class ProductCategory(db.Model):
 
 class Cart(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), primary_key=True)
 
+    def makeorder(self, user_id):
+        try:
+            cart_items = Cart.query.filter_by(user_id=user_id).all()
+            for item in cart_items:
+                order_row= Order(user_id=item.user_id, product_id = item.product_id)
+                db.session.add(order_row)
+                db.session.flush()
+                db.session.commit()
+            ordering_user = User.query.filter_by(user_id=user_id).first()
+            ordering_user.cart_is_open = False
+        except Exception as e:
+            logging.error('Hulladék keresés error: ' + str(e))
+            flash(f' Something went wrong: ' + str(e) )
+
+# def test_makeorder():
+#     Cart.makeorder()
+
+
+
+
+
+class Order(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), primary_key=True)
 
 
 '''
