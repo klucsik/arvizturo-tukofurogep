@@ -1,8 +1,8 @@
-"""empty message
+"""init
 
-Revision ID: 74b05b4ff0b0
+Revision ID: 74a41595cb4d
 Revises: 
-Create Date: 2019-10-26 22:28:48.746923
+Create Date: 2019-10-26 23:57:39.992938
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '74b05b4ff0b0'
+revision = '74a41595cb4d'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -48,14 +48,6 @@ def upgrade():
     sa.Column('description', sa.String(length=500), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_table('product',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('external_id', sa.String(length=200), nullable=True),
-    sa.Column('store', sa.Integer(), nullable=True),
-    sa.Column('quantity', sa.Integer(), nullable=True),
-    sa.Column('quantity_dimension', sa.String(length=100), nullable=True),
-    sa.PrimaryKeyConstraint('id')
-    )
     op.create_table('product_category',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=100), nullable=True),
@@ -80,14 +72,6 @@ def upgrade():
     )
     op.create_index(op.f('ix_user_email'), 'user', ['email'], unique=True)
     op.create_index(op.f('ix_user_username'), 'user', ['username'], unique=True)
-    op.create_table('cart',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('user_id', sa.Integer(), nullable=True),
-    sa.Column('product_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['product_id'], ['product.id'], ),
-    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
-    sa.PrimaryKeyConstraint('id')
-    )
     op.create_table('charity_handling_categories',
     sa.Column('charity_id', sa.Integer(), nullable=False),
     sa.Column('handling_id', sa.Integer(), nullable=False),
@@ -109,26 +93,18 @@ def upgrade():
     sa.ForeignKeyConstraint(['reuse_id'], ['use_category.id'], ),
     sa.PrimaryKeyConstraint('charity_id', 'reuse_id')
     )
-    op.create_table('order',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('user_id', sa.Integer(), nullable=True),
-    sa.Column('product_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['product_id'], ['product.id'], ),
-    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
-    sa.PrimaryKeyConstraint('id')
-    )
     op.create_table('product_mapping',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('chain_id', sa.Integer(), nullable=False),
     sa.Column('chain_product_id', sa.String(length=200), nullable=True),
     sa.Column('name', sa.String(length=200), nullable=True),
-    sa.Column('product_category', sa.Integer(), nullable=False),
-    sa.Column('handling_category', sa.Integer(), nullable=False),
-    sa.Column('reuse_category', sa.Integer(), nullable=False),
+    sa.Column('product_category_id', sa.Integer(), nullable=False),
+    sa.Column('handling_category_id', sa.Integer(), nullable=False),
+    sa.Column('reuse_category_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['chain_id'], ['chain.id'], ),
-    sa.ForeignKeyConstraint(['handling_category'], ['handling_category.id'], ),
-    sa.ForeignKeyConstraint(['product_category'], ['product_category.id'], ),
-    sa.ForeignKeyConstraint(['reuse_category'], ['use_category.id'], ),
+    sa.ForeignKeyConstraint(['handling_category_id'], ['handling_category.id'], ),
+    sa.ForeignKeyConstraint(['product_category_id'], ['product_category.id'], ),
+    sa.ForeignKeyConstraint(['reuse_category_id'], ['use_category.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('stores',
@@ -139,6 +115,16 @@ def upgrade():
     sa.ForeignKeyConstraint(['chain_id'], ['chain.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
+    op.create_table('product',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('external_id', sa.String(length=200), nullable=True),
+    sa.Column('store_id', sa.Integer(), nullable=False),
+    sa.Column('quantity', sa.Integer(), nullable=True),
+    sa.Column('quantity_dimension', sa.String(length=100), nullable=True),
+    sa.Column('state', sa.String(length=100), nullable=True),
+    sa.ForeignKeyConstraint(['store_id'], ['stores.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
     op.create_table('stores_managed_by_user',
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('store_id', sa.Integer(), nullable=False),
@@ -146,25 +132,41 @@ def upgrade():
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('user_id', 'store_id')
     )
+    op.create_table('cart',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=True),
+    sa.Column('product_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['product_id'], ['product.id'], ),
+    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('order',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=True),
+    sa.Column('product_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['product_id'], ['product.id'], ),
+    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
     # ### end Alembic commands ###
 
 
 def downgrade():
     # ### commands auto generated by Alembic - please adjust! ###
+    op.drop_table('order')
+    op.drop_table('cart')
     op.drop_table('stores_managed_by_user')
+    op.drop_table('product')
     op.drop_table('stores')
     op.drop_table('product_mapping')
-    op.drop_table('order')
     op.drop_table('charity_reuse_categories')
     op.drop_table('charity_product_categories')
     op.drop_table('charity_handling_categories')
-    op.drop_table('cart')
     op.drop_index(op.f('ix_user_username'), table_name='user')
     op.drop_index(op.f('ix_user_email'), table_name='user')
     op.drop_table('user')
     op.drop_table('use_category')
     op.drop_table('product_category')
-    op.drop_table('product')
     op.drop_table('handling_category')
     op.drop_table('connect_cart_product')
     op.drop_index(op.f('ix_charity_contact_email'), table_name='charity')

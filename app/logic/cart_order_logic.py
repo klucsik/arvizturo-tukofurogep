@@ -19,8 +19,8 @@ def add_to_cart(user_id, product_id):
             raise Exception("User's cart is not open")
         return row_to_cart
     except Exception as e:
-        logging.error('makeorder went wrong: ' + str(e))
-        flash(f' Something went wrong: ' + str(e))
+        logging.error('add to cart went wrong: ' + str(e))
+        flash(' Something went wrong: ' + str(e))
 
 
 def makeorder(user_id):
@@ -40,15 +40,28 @@ def makeorder(user_id):
         db.session.commit()
     except Exception as e:
         logging.error('makeorder went wrong: ' + str(e))
-        flash(f' Something went wrong: ' + str(e))
+        flash(' Something went wrong: ' + str(e))
+
 
 def fulfill_order(user_id):
     try:
-        'coming soon'
+        order_items = Order.query.filter_by(user_id=user_id).all()
+        for order_item in order_items:
+            product = Product.query.filter_by(id=order_item.product_id)
+            fulfilled_row = Fulfilled(user_id=order_item.user_id, product_id=order_item.product_id)
+            db.session.add(fulfilled_row)
+            order_item.delete()
+            product.state = 'fulfilled'
+            db.session.flush()
+            db.session.commit()
+        ordering_user = User.query.filter_by(id=user_id).first()
+        ordering_user.cart_is_open = True
+        db.session.flush()
+        db.session.commit()
 
     except Exception as e:
-        logging.error('makeorder went wrong: ' + str(e))
-        flash(f' Something went wrong: ' + str(e))
+        logging.error('fulfill went wrong: ' + str(e))
+        flash(' Something went wrong: ' + str(e))
 
 
 
