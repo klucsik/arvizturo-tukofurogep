@@ -15,3 +15,4 @@ Flask-RESTful
 flask_bcrypt
 jsonschema
 flask-admin
+flask-table
