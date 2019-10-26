@@ -31,9 +31,11 @@ def add_to_cart(user_id, product_id):
                 db.session.commit()
         else:
             raise Exception("User's cart is not open")
-
+        return row_to_cart
     except Exception as e:
         logging.error('makeorder went wrong: ' + str(e))
         flash(f' Something went wrong: ' + str(e))
+
+
 
 
