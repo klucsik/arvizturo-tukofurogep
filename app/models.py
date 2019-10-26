@@ -6,6 +6,10 @@ from app import login
 Primary entities
 '''
 
+managed_stores = db.Table('stores_managed_by_user',
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
+    db.Column('store_id', db.Integer, db.ForeignKey('stores.id'), primary_key=True)
+)
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -15,7 +19,7 @@ class User(UserMixin, db.Model):
     role = db.Column(db.Integer, default=0)  # 0 if charity user, 1 if storekeeper, 2 if admin
     charity_id = db.Column(db.Integer)  # connect to Charity table if charity user
     chain_id = db.Column(db.Integer)  # connect to chain table if storekeeper or admin
-
+    managed_stores = db.relationship('Stores', secondary=managed_stores, lazy='subquery', backref=db.backref('users', lazy=True))
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -28,6 +32,7 @@ class Stores(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     store_id = db.Column(db.String(100))
     store_name = db.Column(db.String(100))
+    chain_id = db.Column(db.Integer, db.ForeignKey('chain.id'), nullable=False)
 
 
 class Charity(db.Model):
@@ -61,6 +66,7 @@ higher level entities
 class Chain(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
+    stores = db.relationship(Stores, backref='chain', lazy=True)
 
 
 class ProductCategory(db.Model):
@@ -77,12 +83,6 @@ class Cart(db.Model):
 '''
 connector tables
 '''
-
-
-class ConnectUserStores(db.Model):  # todo: define foreign keys
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer)  # which stores is affected by this user
-    store_id = db.Column(db.String(100))
 
 
 class ConnectCartProduct(db.Model):
