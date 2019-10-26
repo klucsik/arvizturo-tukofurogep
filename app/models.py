@@ -4,6 +4,7 @@ import logging
 from flask_login import UserMixin
 from app import login
 from flask import flash
+from sqlalchemy import orm
 '''
 Primary entities
 '''
@@ -73,7 +74,8 @@ class Charity(db.Model):
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     external_id = db.Column(db.String(200))
-    store = db.Column(db.Integer)
+    store_id = db.Column(db.Integer, db.ForeignKey('stores.id'), nullable=False)
+    store = orm.relationship("Stores")
     quantity = db.Column(db.Integer)
     quantity_dimension = db.Column(db.String(100))
     state = db.Column(db.String(100), default='listed')
@@ -88,9 +90,12 @@ class ProductMapping(db.Model):
     chain_id = db.Column(db.Integer, db.ForeignKey('chain.id'), nullable=False)
     chain_product_id = db.Column(db.String(200))
     name = db.Column(db.String(200))
-    product_category = db.Column(db.Integer, db.ForeignKey('product_category.id'), nullable=False)
-    handling_category = db.Column(db.Integer, db.ForeignKey('handling_category.id'), nullable=False)
-    reuse_category = db.Column(db.Integer, db.ForeignKey('use_category.id'), nullable=False)
+    product_category_id = db.Column(db.Integer, db.ForeignKey('product_category.id'), nullable=False)
+    product_category = orm.relationship("ProductCategory")
+    handling_category_id = db.Column(db.Integer, db.ForeignKey('handling_category.id'), nullable=False)
+    handling_category = orm.relationship("HandlingCategory")
+    reuse_category_id = db.Column(db.Integer, db.ForeignKey('use_category.id'), nullable=False)
+    reuse_category = orm.relationship("UseCategory")
 
 
 '''
