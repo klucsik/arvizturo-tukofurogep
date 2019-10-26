@@ -33,6 +33,11 @@ class Charity(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200))
     category_id = db.Column(db.Integer)
+    organisation_name = db.Column(db.String(200), unique=True)
+    address = db.Column(db.String(200))
+    contact_name = db.Column(db.String(100))
+    contact_phone_number = db.Column(db.String(20))
+    contact_email = db.Column(db.String(120), index=True, unique=True)
 
 
 class Product(db.Model):
@@ -40,8 +45,8 @@ class Product(db.Model):
     external_id = db.Column(db.String(200))
     name = db.Column(db.String(200))
     store = db.Column(db.Integer)
-    ProductCategory = db.Column(db.Integer)
-    HandlingCategory = db.Column(db.Integer)
+    product_category = db.Column(db.Integer)
+    handling_category = db.Column(db.Integer)
     quantity = db.Column(db.Integer)
     quantity_dimension = db.Column(db.String(100))
 

@@ -8,7 +8,7 @@ import time
 @app.route('/index', methods=['GET', 'POST'])
 @login_required
 def index():
-    return 'Hello there!'
+    return 'kakika'
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
