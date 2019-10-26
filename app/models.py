@@ -76,6 +76,11 @@ class Product(db.Model):
     store = db.Column(db.Integer)
     quantity = db.Column(db.Integer)
     quantity_dimension = db.Column(db.String(100))
+    state = db.Column(db.String(100), default='listed')
+    # listed = available,
+    # in_cart = in someones cart/in cart table,
+    # ordered = in order table
+    # fullfilled = delivered to charities, end state
 
 
 class ProductMapping(db.Model):
@@ -114,6 +119,8 @@ class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
+
+
 
 
 '''

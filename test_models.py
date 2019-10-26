@@ -1,4 +1,4 @@
-from app.cart_order_logic import *
+from app.logic.cart_order_logic import *
 
 
 def test_makeorder():
