@@ -19,7 +19,8 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
     role = db.Column(db.Integer, default=0)  # 0 if charity user, 1 if storekeeper, 2 if admin
-    charity_id = db.Column(db.Integer)  # connect to Charity table if charity user
+    charity_id = db.Column(db.Integer, db.ForeignKey('charity.id'), nullable=True)  # connect to Charity table if charity user
+    charity = orm.relationship("Charity")
     chain_id = db.Column(db.Integer)  # connect to chain table if storekeeper or admin
     managed_stores = db.relationship('Stores', secondary=managed_stores, lazy='subquery', backref=db.backref('users', lazy=True))
     cart_is_open = db.Column(db.Boolean, default= True)
@@ -54,6 +55,11 @@ charity_product_categories = db.Table('charity_product_categories',
     db.Column('product_category_id', db.Integer, db.ForeignKey('product_category.id'), primary_key=True)
 )
 
+charity_stores = db.Table('charity_stores',
+    db.Column('charity_id', db.Integer, db.ForeignKey('charity.id'), primary_key=True),
+    db.Column('store_id', db.Integer, db.ForeignKey('stores.id'), primary_key=True)
+)
+
 
 class Charity(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -67,6 +73,7 @@ class Charity(db.Model):
     contact_name = db.Column(db.String(100))
     contact_phone_number = db.Column(db.String(20))
     contact_email = db.Column(db.String(120), index=True, unique=True)
+    charity_stores = db.relationship('Stores', secondary=charity_stores, lazy='subquery')
 
 
 class Product(db.Model):
