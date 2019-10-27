@@ -11,6 +11,7 @@ Primary entities
 class LocationMixin(object):
     latitude = db.Column(db.Numeric())
     longitude = db.Column(db.Numeric())
+    address = db.Column(db.String(200))
 
 
 managed_stores = db.Table('stores_managed_by_user',
@@ -75,7 +76,6 @@ class Charity(LocationMixin, db.Model):
     handling_categories = db.relationship('HandlingCategory', secondary=charity_handling_categories, lazy='subquery')
     product_categories = db.relationship('ProductCategory', secondary=charity_product_categories, lazy='subquery')
     organisation_name = db.Column(db.String(200), unique=True)
-    address = db.Column(db.String(200))
     contact_name = db.Column(db.String(100))
     contact_phone_number = db.Column(db.String(20))
     contact_email = db.Column(db.String(120), index=True, unique=True)
