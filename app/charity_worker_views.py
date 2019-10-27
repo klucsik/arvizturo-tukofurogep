@@ -4,6 +4,10 @@ from app import charityworker, db
 from flask_admin.contrib.sqla import ModelView
 from flask_login import current_user
 from geopy.distance import geodesic
+from flask_admin.babel import lazy_gettext, gettext, ngettext
+from flask_admin.actions import action
+from flask import flash
+from flask_admin.contrib.sqla import tools
 
 '''
 veiws
@@ -43,16 +47,60 @@ def get_charity_store_distance(model):
 
 class CharityWorkerStoresModelView(ModelView):
     column_filters = ("chain",)
-    column_list = ("subscribed", "distance", "store_id", "store_name", "chain")
+    column_list = ("subscribed", "distance", "address", "store_name", "chain", "store_id")
     column_labels = dict(selected="Subscribed")
+    can_delete = False
+    can_edit = False
     column_formatters = {
         "subscribed": lambda v, c, m, p: is_selected_store(m),
         "distance": lambda v, c, m, p: get_charity_store_distance(m),
     }
 
-#columns = ["Selected", "Distance", "Name", "Address", "Chain", "ProdCats"]
+    @action('subscribe',
+            lazy_gettext('Subscribe'))
+    def action_subscribe(self, ids):
+        try:
+            query = tools.get_query_for_ids(self.get_query(), self.model, ids)
+            count = 0
+            stores = current_user.charity.charity_stores
+            for m in query.all():
+                if m not in stores:
+                    stores.append(m)
+                    count += 1
 
+            self.session.commit()
 
+            flash(ngettext('Successfully subscribed to store.',
+                           'Subscribed to %(count)s stores.',
+                           count,
+                           count=count), 'success')
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+            flash(gettext('Failed to subscribe to stores. %(error)s', error=str(ex)), 'error')
+
+    @action('unsubscribe',
+            lazy_gettext('Unsubscribe'))
+    def action_unsubscribe(self, ids):
+        try:
+            query = tools.get_query_for_ids(self.get_query(), self.model, ids)
+            count = 0
+            stores = current_user.charity.charity_stores
+            for m in query.all():
+                if m in stores:
+                    stores.remove(m)
+                    count += 1
+
+            self.session.commit()
+
+            flash(ngettext('Successfully unsubscribed from stores.',
+                           'Unsubscribed from %(count)s stores.',
+                           count,
+                           count=count), 'success')
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+            flash(gettext('Failed to unsubscribe from stores. %(error)s', error=str(ex)), 'error')
 
 
 charityworker.add_view(CharityWorkerStoresModelView(Stores, db.session, endpoint='cw-stores'))
