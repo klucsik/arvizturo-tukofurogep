@@ -7,6 +7,12 @@ from sqlalchemy import orm
 Primary entities
 '''
 
+
+class LocationMixin(object):
+    latitude = db.Column(db.Numeric())
+    longitude = db.Column(db.Numeric())
+
+
 managed_stores = db.Table('stores_managed_by_user',
     db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
     db.Column('store_id', db.Integer, db.ForeignKey('stores.id'), primary_key=True)
@@ -32,7 +38,7 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
 
-class Stores(db.Model):
+class Stores(LocationMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     store_id = db.Column(db.String(100))  # chain specific store id
     store_name = db.Column(db.String(100))
@@ -61,7 +67,7 @@ charity_stores = db.Table('charity_stores',
 )
 
 
-class Charity(db.Model):
+class Charity(LocationMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200))
     category_id = db.Column(db.Integer)  # FIXME: Remove
