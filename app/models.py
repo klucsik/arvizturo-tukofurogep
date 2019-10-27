@@ -64,7 +64,7 @@ charity_stores = db.Table('charity_stores',
 class Charity(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200))
-    category_id = db.Column(db.Integer)
+    category_id = db.Column(db.Integer)  # FIXME: Remove
     reuse_categories = db.relationship('UseCategory', secondary=charity_reuse_categories, lazy='subquery')
     handling_categories = db.relationship('HandlingCategory', secondary=charity_handling_categories, lazy='subquery')
     product_categories = db.relationship('ProductCategory', secondary=charity_product_categories, lazy='subquery')
