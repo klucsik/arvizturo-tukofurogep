@@ -46,14 +46,16 @@ def get_charity_store_distance(model):
 
 
 class CharityWorkerStoresModelView(ModelView):
-    column_filters = ("chain",)
+    column_filters = ("chain", "address", "store_name")
     column_list = ("subscribed", "distance", "address", "store_name", "chain", "store_id")
     column_labels = dict(selected="Subscribed")
     can_delete = False
     can_edit = False
+    can_create = False
     column_formatters = {
         "subscribed": lambda v, c, m, p: is_selected_store(m),
         "distance": lambda v, c, m, p: get_charity_store_distance(m),
+        "chain": lambda v, c, m, p: m.chain.name,
     }
 
     @action('subscribe',
